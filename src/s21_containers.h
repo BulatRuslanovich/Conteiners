@@ -1,0 +1,4 @@
+#ifndef SRC_S21_CONTAINERS_H
+#define SRC_S21_CONTAINERS_H
+
+#endif // SRC_S21_CONTAINERS_H
