@@ -41,7 +41,7 @@ public:
     }
   }
 
-  List(List &&l) noexcept { splice(begin(), l); }
+  List(List &&l) noexcept : List()  { splice(begin(), l); }
 
   ~List() {
     clear();
@@ -161,17 +161,21 @@ public:
         }
       }
 
+
       splice(end(), other);
     }
   }
 
-  void splice(const_iterator pos, List &other) {
+  void splice(const_iterator pos, List &other) noexcept {
     if (!other.empty()) {
       iterator itCurrent{const_cast<Node *>(pos._node)};
       iterator itOther = other.end();
 
       itOther._node->_next->_prev = itCurrent._node->_prev;
       itOther._node->_prev->_next = itCurrent._node->_next;
+
+      itCurrent._node->_prev->_next = itOther._node->_next;
+      itCurrent._node->_prev = itOther._node->_prev;
 
       _size += other.size();
       other._head->_next = other._head;
@@ -184,10 +188,11 @@ public:
     iterator endIt = end();
 
     while (beginIt != endIt) {
-      beginIt._node->PrevNextSwap();
+      beginIt._node->SwapChains();
       --beginIt;
     }
-    _head->PrevNextSwap();
+
+    _head->SwapChains();
   }
 
   void unique() {
@@ -230,17 +235,17 @@ private:
       value_type pivot = *pivotIt;
       shift = 0;
 
-      pivotIt._node->ValueSwap(right._node);
+      pivotIt._node->SwapValue(right._node);
 
       while (tempLeft != tempRight) {
         if (*tempLeft < pivot) {
           ++swapIt;
           ++shift;
-          tempLeft._node->ValueSwap(swapIt._node);
+          tempLeft._node->SwapValue(swapIt._node);
           ++tempLeft;
         } else if (*tempLeft == pivot) {
           --tempRight;
-          tempLeft._node->ValueSwap(tempRight._node);
+          tempLeft._node->SwapValue(tempRight._node);
         } else {
           ++tempLeft;
         }
@@ -252,13 +257,13 @@ private:
 
       ++swapIt;
       while (tempRight != right) {
-        swapIt._node->ValueSwap(tempRight._node);
+        swapIt._node->SwapValue(tempRight._node);
         ++swapIt;
         ++tempLeft;
         --nextRightSize;
       }
 
-      swapIt._node->ValueSwap(right._node);
+      swapIt._node->SwapValue(right._node);
       ++swapIt;
 
       iterator nextRight = swapIt;
@@ -315,15 +320,16 @@ private:
       this->_next = nullptr;
     }
 
-    void ValueSwap(Node *other) { std::swap(this->_value, other->_value); }
+    void SwapValue(Node *other) { std::swap(this->_value, other->_value); }
 
-    void PrevNextSwap() { std::swap(_prev, _next); }
+    void SwapChains() { std::swap(_prev, _next); }
   };
 
   struct ListIterator {
+    Node *_node;
     ListIterator() = delete;
-    explicit ListIterator(Node *node) noexcept : _node(node){};
-    value_type &operator*() noexcept { return _node->_value; }
+    explicit ListIterator(Node *node) noexcept : _node(node) {};
+    reference operator*() const noexcept { return _node->_value; }
 
     iterator &operator++() noexcept {
       _node = _node->_next;
@@ -354,16 +360,14 @@ private:
     bool operator!=(const iterator &other) const noexcept {
       return _node != other._node;
     }
-
-    Node *_node;
   };
 
   struct ListConstIterator {
+    const Node *_node;
     ListConstIterator() = delete;
     explicit ListConstIterator(const Node *node) noexcept : _node(node){};
-    explicit ListConstIterator(const iterator &it) : _node(it->node){};
-
-    const Node &operator*() const noexcept { return _node->_value; }
+    ListConstIterator(const iterator &it) : _node(it._node){};
+    reference operator*() const noexcept { return _node->_value; }
 
     const_iterator &operator++() noexcept {
       _node = _node->_next;
@@ -387,20 +391,19 @@ private:
       return temp;
     }
 
-    bool operator==(const const_iterator &other) noexcept {
-      return this->_node == other->_node;
+    // TODO: понять почему с friend работает merge
+    friend bool operator==(const const_iterator &it1, const const_iterator &it2) noexcept {
+      return it1._node == it2._node;
     }
 
-    bool operator!=(const const_iterator &other) noexcept {
-      return this->_node != other->_node;
+    friend bool operator!=(const const_iterator &it1, const const_iterator &it2) noexcept {
+      return it1._node != it2._node;
     }
-
-    const Node *_node;
   };
 
 private:
   Node *_head;
-  size_type _size{};
+  size_type _size;
 };
 
 };
