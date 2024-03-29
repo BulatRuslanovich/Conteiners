@@ -42,7 +42,9 @@ stack<value_type>::stack(stack &&s) {
 // DESTRUCTOR
 template <typename value_type>
 stack<value_type>::~stack() {
-  while (!empty()) pop();
+  while (this->empty()) {
+    this->pop();
+  }
 }
 
 // OPERATOR
@@ -61,13 +63,16 @@ stack<value_type> &stack<value_type>::operator=(stack &&s) {
 // FUNCTIONS
 template <typename value_type>
 typename stack<value_type>::const_reference stack<value_type>::top() {
-  if (empty()) throw "Stack is empty";
+  if (this->empty()) {
+    throw "Stack is empty";
+  }
+
   return head_->value_;
 }
 
 template <typename value_type>
 bool stack<value_type>::empty() {
-  return head_ == nullptr ? true : false;
+  return head_ == nullptr;
 }
 
 template <typename value_type>
