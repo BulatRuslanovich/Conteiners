@@ -1,4 +1,4 @@
-#include "stack.h" 
+#include "s21_stack.h" 
 namespace s21 {
 // CONSTRUCTORS
 template <typename value_type>
@@ -102,3 +102,4 @@ void stack<value_type>::swap(stack &other) {
   std::swap(size_, other.size_);
 }
 }  // namespace s21
+

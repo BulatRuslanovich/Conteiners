@@ -1,5 +1,5 @@
-#ifndef _STACK_H_
-#define _STACK_H_
+#ifndef _S21_STACK_H_
+#define _S21_STACK_H_
 
 #include <iostream>
  
