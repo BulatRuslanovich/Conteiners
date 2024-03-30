@@ -3,6 +3,7 @@
 //
 
 #ifndef CONTEINERS_TEST_H
+#include "../s21_containers.h"
 #define CONTEINERS_TEST_H
 
 #endif // CONTEINERS_TEST_H
