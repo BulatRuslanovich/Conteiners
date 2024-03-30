@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <limits>
 #include <iterator>
+#include <iostream>
 
 namespace s21 {
 template <typename T> class List {
@@ -259,7 +260,7 @@ private:
       while (tempRight != right) {
         swapIt._node->SwapValue(tempRight._node);
         ++swapIt;
-        ++tempLeft;
+        ++tempRight;
         --nextRightSize;
       }
 
@@ -272,6 +273,7 @@ private:
       quickSort(nextRight, right, nextRightSize);
     }
   }
+
 
   template <typename... Args>
   iterator emplace(const_iterator pos, Args &&...args) {
@@ -326,6 +328,12 @@ private:
   };
 
   struct ListIterator {
+    using iterator_category = std::bidirectional_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = List::value_type;
+    using pointer = value_type*;
+    using reference = value_type&;
+
     Node *_node;
     ListIterator() = delete;
     explicit ListIterator(Node *node) noexcept : _node(node) {};
@@ -363,6 +371,13 @@ private:
   };
 
   struct ListConstIterator {
+    // это что-то типа наследования от интерфейса
+    using iterator_category = std::bidirectional_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = List::value_type;
+    using pointer = const value_type*;
+    using reference = const value_type&;
+
     const Node *_node;
     ListConstIterator() = delete;
     explicit ListConstIterator(const Node *node) noexcept : _node(node){};
