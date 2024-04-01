@@ -107,7 +107,7 @@ class array{
     //func
     template <class T, std::size_t N>
     typename array<T, N>::reference array<T, N>::at(size_type pos) {
-    if (pos >= N) throw std::out_of_range("Current element outside the array");
+    if (pos >= N) throw std::out_of_range("Out of range");
        return array_[pos];
     }
 
