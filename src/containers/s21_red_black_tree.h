@@ -24,7 +24,7 @@ public:
 
   using treeType = RBTree;
   using treeNode = RBTreeNode;
-  using treeColor = RBTreeNode;
+  using treeColor = RBTreeColor;
 
 private:
   treeNode *root;
@@ -72,11 +72,11 @@ public:
     size = 0;
   }
 
-  sizeType Size() const noexcept { return size; }
+  [[nodiscard]] sizeType Size() const noexcept { return size; }
 
-  bool Empty() const noexcept { return size == 0; }
+  [[nodiscard]] bool Empty() const noexcept { return size == 0; }
 
-  sizeType MaxSize() const noexcept {
+  [[nodiscard]] sizeType MaxSize() const noexcept {
     return ((std::numeric_limits<sizeType>::max() / 2) - 2 * sizeof(treeType)) /
            sizeof(treeType);
   }
@@ -141,13 +141,13 @@ public:
     }
   }
 
-  iterator Insert(constReference key) {
-    treeNode *newNode = new treeNode{key};
+  iterator Insert(const keyType &key) {
+    auto *newNode = new treeNode{key};
     return Insert(Root(), newNode, false).first;
   }
 
-  std::pair<iterator, bool> InsertUnique(constReference key) {
-    treeNode *newNode = new treeNode{key};
+  std::pair<iterator, bool> InsertUnique(const keyType &key) {
+    auto *newNode = new treeNode{key};
     std::pair<iterator, bool> result = Insert(Root(), newNode, true);
 
     if (!result.second) {
@@ -163,7 +163,7 @@ public:
     result.reserve(sizeof...(args));
 
     for (auto item : {std::forward<Args>(args)...}) {
-      treeNode *newNode = new treeNode(std::move(item));
+      auto *newNode = new treeNode(std::move(item));
       std::pair<iterator, bool> resultInsert = Insert(Root(), newNode, false);
       result.push_back(resultInsert);
     }
@@ -177,7 +177,7 @@ public:
     result.reserve(sizeof...(args));
 
     for (auto item : {std::forward<Args>(args)...}) {
-      treeNode *newNode = new treeNode(std::move(item));
+      auto *newNode = new treeNode(std::move(item));
       std::pair<iterator, bool> resultInsert = Insert(Root(), newNode, true);
       if (!resultInsert.second) {
         delete newNode;
@@ -242,7 +242,7 @@ public:
     std::swap(cmp, other.cmp);
   }
 
-  bool CheckTree() const noexcept {
+  [[nodiscard]] bool CheckTree() const noexcept {
     if (root->color == Black) {
       return false;
     }
@@ -372,7 +372,7 @@ private:
     // Father
     treeNode *parent = node->parent;
 
-    while (node != Root() && parent == Red) {
+    while (node != Root() && parent->color == Red) {
       // Grandpa
       treeNode *grand = parent->parent;
 
@@ -431,7 +431,7 @@ private:
   }
 
   void RotateRight(treeNode *node) noexcept {
-    const treeNode *pivot = node->left;
+    treeNode *const pivot = node->left;
     pivot->parent = node->parent;
 
     if (node == Root()) {
@@ -453,7 +453,7 @@ private:
   }
 
   void RotateLeft(treeNode *node) noexcept {
-    const treeNode *pivot = node->right;
+     treeNode *const pivot = node->right;
     pivot->parent = node->parent;
 
     if (node == Root()) {
@@ -471,7 +471,7 @@ private:
     }
 
     node->parent = pivot;
-    pivot->right = node;
+    pivot->left = node;
   }
 
   treeNode *ExtractNode(iterator pos) noexcept {
@@ -482,7 +482,7 @@ private:
     treeNode *deleteNode = pos.node;
 
     if (deleteNode->left != nullptr && deleteNode->right != nullptr) {
-      treeNode *replace = SearchMininmum(deleteNode->right);
+      treeNode *replace = SearchMin(deleteNode->right);
       SwapNodesForErase(deleteNode, replace);
     }
 
@@ -715,14 +715,18 @@ private:
     RBTreeNode()
         : parent(nullptr), left(this), right(this), key(keyType{}),
           color(Red){};
-    RBTreeNode(const keyType &key)
+
+    explicit RBTreeNode(const keyType &key)
         : parent(nullptr), left(nullptr), right(nullptr), key(key), color(Red) {
     }
-    RBTreeNode(keyType &&key)
+
+    explicit RBTreeNode(keyType &&key)
         : parent(nullptr), left(nullptr), right(nullptr), key(std::move(key)),
           color(Red) {}
+
     RBTreeNode(keyType key, treeColor color)
         : parent(nullptr), left(this), right(this), key(key), color(color){};
+
     void ToDefault() noexcept {
       left = nullptr;
       right = nullptr;
@@ -731,7 +735,7 @@ private:
     }
 
     treeNode *NextNode() const noexcept {
-      treeNode *node = const_cast<treeNode *>(this);
+      auto *node = const_cast<treeNode *>(this);
 
       if (node->color == Red &&
           (node->parent == nullptr || node->parent->parent == node)) {
@@ -746,12 +750,12 @@ private:
         treeNode *origin = node->parent;
 
         while (node == origin->right) {
-          node = parent;
-          origin = parent->parent;
+          node = origin;
+          origin = origin->parent;
         }
 
-        if (node->right != parent) {
-          node = parent;
+        if (node->right != origin) {
+          node = origin;
         }
       }
 
@@ -759,7 +763,7 @@ private:
     }
 
     treeNode *PrevNode() const noexcept {
-      treeNode *node = const_cast<treeNode *>(this);
+      auto *node = const_cast<treeNode *>(this);
 
       if (node->color == Red &&
           (node->parent == nullptr || node->parent->parent == node)) {
@@ -843,6 +847,7 @@ private:
     RBTreeConstIterator() = delete;
 
     explicit RBTreeConstIterator(const treeNode *node) : node(node) {}
+
     RBTreeConstIterator(const iterator &it) : node(it.node){};
 
     reference operator*() const noexcept { return node->key; }
