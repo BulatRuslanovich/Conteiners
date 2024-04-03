@@ -1,20 +1,13 @@
-# PROJECT
-# CPP CONTAINERS
 
-# GLOBAL
-
-# SOURCE, OBJECT AND TEST FILES / FOLDERS
 TEST_FOLDER  = tests
 TEST_OUTPUT  = test
 TEST_PRE_H   = main.h
 
-# GCC SETTINGS
 COMPILATOR   = g++ -g
 FLAGS_BASIC  = -Wall -Wextra -Werror --std=c++17 #-pedantic
 FLAGS_EXTRA  = $(FLAGS_BASIC) -fsanitize=address,undefined,leak
 FLAGS_COV    = -lgtest -pthread -lgcov --coverage
 
-# FILETYPES FOR CLEAN AND FCLEAN TARGETS
 GCOV_INFO    = gcov_report.info
 GCOV_FOLDER  = report
 VALGRIND_LOG = _valgrind-out.txt
