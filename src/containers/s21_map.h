@@ -129,7 +129,6 @@ public:
 private:
   treeType *tree;
 };
-
-}
+}// namespace s21
 
 #endif // CONTAINERS_S21_MAP_H

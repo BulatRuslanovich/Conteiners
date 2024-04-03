@@ -46,9 +46,9 @@ public:
   const_iterator begin() const noexcept { return tree->Begin(); }
   iterator end() noexcept { return tree->End(); }
   const_iterator end() const noexcept { return tree->End(); }
-  bool empty() const noexcept { return tree->Empty(); }
-  size_type size() const noexcept { return tree->Size(); }
-  size_type max_size() const noexcept { return tree->MaxSize(); }
+  [[nodiscard]] bool empty() const noexcept { return tree->Empty(); }
+  [[nodiscard]] size_type size() const noexcept { return tree->Size(); }
+  [[nodiscard]] size_type max_size() const noexcept { return tree->MaxSize(); }
   void clear() noexcept { tree->Clear(); }
   std::pair<iterator, bool> insert(const value_type &value) {
     return tree->InsertUnique(value);
