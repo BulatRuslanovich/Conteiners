@@ -3,7 +3,7 @@
 class QueueTest : public ::testing::Test {
  protected:
   void SetUp() override {}
-  s21::queue<int> my_queue_empty_;
+  s21::queue<int> my_queue_empty_{};
   s21::queue<int> my_queue_full_{2, 5, 7, 10};
   struct new_type {
     char a_char = 'd';
@@ -20,22 +20,22 @@ TEST_F(QueueTest, default_constructor) {
 TEST_F(QueueTest, list_constructor) {
   ASSERT_FALSE(my_queue_full_.empty());
   ASSERT_EQ(my_queue_full_.size(), 4);
-  ASSERT_EQ(my_queue_full_.front(), 2); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(my_queue_full_.front(), 2); 
 }
 
 TEST_F(QueueTest, copy_constructor) {
   s21::queue<int> new_queue(my_queue_full_);
   ASSERT_FALSE(new_queue.empty());
   ASSERT_EQ(new_queue.size(), 4);
-  ASSERT_EQ(new_queue.front(), 2); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(new_queue.front(), 2); 
   new_queue.pop();
   ASSERT_EQ(new_queue.size(), 3);
-  ASSERT_EQ(new_queue.front(), 5); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(new_queue.front(), 5); 
 }
 
 TEST_F(QueueTest, move_constructor) {
   s21::queue<int> new_queue(std::move(my_queue_full_));
-  ASSERT_EQ(new_queue.front(), 2); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(new_queue.front(), 2); 
   ASSERT_EQ(new_queue.size(), 4);
   ASSERT_FALSE(new_queue.empty());
   s21::queue<int> new_queue_empty(std::move(my_queue_empty_));
@@ -48,7 +48,7 @@ TEST_F(QueueTest, over_operator_move) {
   new_queue_empty = std::move(my_queue_full_);
   ASSERT_EQ(new_queue_empty.size(), 4);
   ASSERT_FALSE(new_queue_empty.empty());
-  ASSERT_EQ(new_queue_empty.front(), 2); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(new_queue_empty.front(), 2); 
   s21::queue<int> temp_queue{1, 2, 3, 4, 5};
   new_queue_empty = std::move(temp_queue);
   ASSERT_EQ(new_queue_empty.size(), 5);
@@ -59,21 +59,22 @@ TEST_F(QueueTest, over_operator_move) {
   ASSERT_TRUE(new_queue_empty.empty());
 }
 
-// TEST_F(QueueTest, over_operator_copy) {
-//   my_queue_full_ = my_queue_full_;
-//   ASSERT_FALSE(my_queue_full_.empty());
-//   ASSERT_EQ(my_queue_full_.front(), 2); // Изменено значение для соответствия вашей реализации
-//   ASSERT_EQ(my_queue_full_.size(), 4);
-//   s21::queue<int> new_queue_full{10, 20, 30};
-//   new_queue_full = my_queue_full_;
-//   ASSERT_FALSE(my_queue_full_.empty());
-//   ASSERT_EQ(my_queue_full_.front(), 2); // Изменено значение для соответствия вашей реализации
-//   ASSERT_EQ(my_queue_full_.size(), 4);
-//   new_queue_full = my_queue_empty_;
-//   ASSERT_FALSE(my_queue_full_.empty());
-//   ASSERT_EQ(my_queue_full_.front(), 2); // Изменено значение для соответствия вашей реализации
-//   ASSERT_EQ(my_queue_full_.size(), 4);
-// }
+TEST_F(QueueTest, over_operator_copy) {
+  my_queue_full_ = my_queue_full_;
+  ASSERT_FALSE(my_queue_full_.empty());
+  ASSERT_EQ(my_queue_full_.front(), 2); 
+  ASSERT_EQ(my_queue_full_.size(), 4);
+  s21::queue<int> new_queue_full{10, 20, 30};
+  new_queue_full = my_queue_full_;
+  ASSERT_FALSE(my_queue_full_.empty());
+  ASSERT_EQ(my_queue_full_.front(), 2); 
+  ASSERT_EQ(my_queue_full_.size(), 4);
+  new_queue_full = my_queue_empty_;
+  ASSERT_FALSE(my_queue_full_.empty());
+  ASSERT_EQ(my_queue_full_.front(), 2); 
+  ASSERT_EQ(my_queue_full_.size(), 4);
+
+}
 
 TEST_F(QueueTest, empty_function) {
   ASSERT_FALSE(my_queue_full_.empty());
@@ -88,16 +89,16 @@ TEST_F(QueueTest, size_function) {
 TEST_F(QueueTest, push_function) {
   my_queue_full_.push(32);
   my_queue_empty_.push(2);
-  ASSERT_EQ(my_queue_full_.front(), 2); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(my_queue_full_.front(), 2); 
   ASSERT_EQ(my_queue_empty_.front(), 2);
 }
 
 TEST_F(QueueTest, pop_function) {
-  ASSERT_THROW(my_queue_empty_.pop(), std::out_of_range); // Изменено исключение для соответствия вашей реализации
+  ASSERT_THROW(my_queue_empty_.pop(), std::out_of_range); 
   my_queue_full_.pop();
-  ASSERT_EQ(my_queue_full_.front(), 5); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(my_queue_full_.front(), 5); 
   my_queue_full_.pop();
-  ASSERT_EQ(my_queue_full_.front(), 7); // Изменено значение для соответствия вашей реализации
+  ASSERT_EQ(my_queue_full_.front(), 7); 
 }
 
 TEST_F(QueueTest, swap_function) {
@@ -113,17 +114,23 @@ TEST_F(QueueTest, swap_function) {
   ASSERT_EQ(buff_queue_1.front().a_char, 'd');
 }
 
-// TEST_F(QueueTest, push2_function) {
-//   my_queue_full_.push(48);
-//   my_queue_full_.push(68);
-//   my_queue_full_.push(88);
-//   my_queue_full_.push(108);
-//   my_queue_full_.pop();
-//   my_queue_full_.pop();
-//   my_queue_full_.pop();
-//   my_queue_full_.pop();
-//   for (int i = 48; i != 108; i += 20) {
-//     ASSERT_EQ(my_queue_full_.back(), i);
-//     my_queue_full_.pop();
-//   }
-// }
+ 
+TEST_F(QueueTest, clear_function) {
+  my_queue_full_.clear();
+  ASSERT_TRUE(my_queue_full_.empty());
+  ASSERT_EQ(my_queue_full_.size(), 0);
+
+  ASSERT_THROW(my_queue_full_.front(), std::out_of_range);
+  ASSERT_THROW(my_queue_full_.back(), std::out_of_range);
+}
+
+TEST_F(QueueTest, front_and_back_functions) {
+  ASSERT_EQ(my_queue_full_.front(), 2); 
+  ASSERT_EQ(my_queue_full_.back(), 10); 
+  my_queue_full_.push(15);
+  ASSERT_EQ(my_queue_full_.front(), 2);
+  ASSERT_EQ(my_queue_full_.back(), 15); 
+
+  ASSERT_THROW(my_queue_empty_.front(), std::out_of_range);
+  ASSERT_THROW(my_queue_empty_.back(), std::out_of_range);
+}
