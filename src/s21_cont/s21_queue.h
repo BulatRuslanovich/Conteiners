@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <initializer_list>
+#include <stdexcept>
+
 
 namespace s21 {
 
