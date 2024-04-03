@@ -1,158 +1,124 @@
-#ifndef _S21_STACK_H_
-#define _S21_STACK_H_
+#ifndef S21_STACK_H_
+#define S21_STACK_H_
 
 #include <iostream>
- 
+#include <stdexcept>
 
 namespace s21 {
     template <typename T>
     class stack {
-        public:
-            using value_type = T;
-            using reference = T &;
-            using const_reference = const T &;
-            using size_type = std::size_t;
+    private:
+      struct Node;
+    public:
+      using value_type = T;
+      using reference = T &;
+      using const_reference = const T &;
+      using size_type = std::size_t;
 
-            //constructors
+      stack() : head_(nullptr), size_(0U) {}
 
-            stack(); 
-            stack(std::initializer_list<value_type> const &items);
-            stack(const stack &s);
-            stack(stack &&s);
-
-            //destructor
-            ~stack();
-
-            //Func-s
-            const_reference top();
-            bool empty();
-            size_type size() const;
-            void push(const_reference value);
-            void pop();
-            void swap(stack &other);
-
-            //oeprator
-            stack &operator=(stack &&s);
-
-        private:
-            struct Node {
-                value_type value_;
-                Node *prev_;
-
-                Node(const T &value = 0) : value_(value), prev_(nullptr) {}
-            };
-            Node *head_ = nullptr;
-            size_type size_ = 0;
-
-        //real
-        template <typename value_type>
-        stack<value_type>::stack() : head_(nullptr), size_(0) {}
-
-        template <typename value_type>
-        stack<value_type>::stack(std::initializer_list<value_type> const &items) {
-        for (auto iter = items.begin(); iter != items.end(); ++iter) {
-            push(*iter);
+      stack(std::initializer_list<value_type> const &items) : stack() {
+        for (auto item : items) {
+          push(item);
         }
-        }
+      }
 
-        template <typename value_type>
-        stack<value_type>::stack(const stack &s) {
+      stack(const stack &s) : stack() {
         if (s.head_ == nullptr) {
-            head_ = nullptr;
-            return;
+          head_ = nullptr;
+          return;
         }
         value_type array[s.size()];
         int i = 0;
         Node *temp = s.head_;
+
         while (temp) {
-            array[i] = temp->value_;
-            temp = temp->prev_;
-            i++;
-        }
-        while (i > 0) {
-            push(array[i - 1]);
-            i--;
-        }
+          array[i] = temp->value_;
+          temp = temp->prev_;
+          i++;
         }
 
-        template <typename value_type>
-        stack<value_type>::stack(stack &&s) {
+        while (i > 0) {
+          push(array[i - 1]);
+          i--;
+        }
+      }
+
+      // TODO: надо  переделать, по идеи работает не как задумано
+      stack(stack &&s) noexcept {
         head_ = s.head_;
         size_ = s.size_;
         s.head_ = nullptr;
         s.size_ = 0;
-        }
+      }
 
-        // DESTRUCTOR
-        template <typename value_type>
-        stack<value_type>::~stack() {
+      ~stack() {
         while (this->empty()) {
-            this->pop();
+          this->pop();
         }
-        }
+      }
 
-        // OPERATOR
-        template <typename value_type>
-        stack<value_type> &stack<value_type>::operator=(stack &&s) {
-        if (this != &s) {
-            this->~stack();
-            head_ = s.head_;
-            size_ = s.size_;
-            s.head_ = nullptr;
-            s.size_ = 0;
-        }
-        return *this;
-        }
-
-        // FUNCTIONS
-        template <typename value_type>
-        typename stack<value_type>::const_reference stack<value_type>::top() {
+      const_reference top() {
         if (this->empty()) {
-            throw "Stack is empty";
+          throw std::out_of_range("Stack is empty");
         }
 
         return head_->value_;
-        }
+      }
 
-        template <typename value_type>
-        bool stack<value_type>::empty() {
-        return head_ == nullptr;
-        }
+      bool empty() { return size_ == 0; }
 
-        template <typename value_type>
-        typename stack<value_type>::size_type stack<value_type>::size() const {
-        return size_;
-        }
+      [[nodiscard]] size_type size() const { return size_; }
 
-        template <typename value_type>
-        void stack<value_type>::push(const_reference value) {
+      void push(const_reference value) {
         Node *ptr = new Node(value);
         if (head_) {
-            ptr->prev_ = head_;
-            head_ = ptr;
+          ptr->prev_ = head_;
+          head_ = ptr;
         } else
-            head_ = ptr;
+          head_ = ptr;
         ++size_;
-        }
+      }
 
-        template <typename value_type>
-        void stack<value_type>::pop() {
+      void pop() {
         if (head_ != nullptr) {
-            Node *ptr = head_->prev_;
-            delete head_;
-            head_ = ptr;
-            --size_;
+          Node *ptr = head_->prev_;
+          delete head_;
+          head_ = ptr;
+          --size_;
         }
-        }
+      }
 
-        template <typename value_type>
-        void stack<value_type>::swap(stack &other) {
+      void swap(stack &other) {
         std::swap(head_, other.head_);
         std::swap(size_, other.size_);
+      }
+
+      stack &operator=(stack &&s)  noexcept {
+        if (this != &s) {
+          this->~stack();
+          head_ = s.head_;
+          size_ = s.size_;
+          s.head_ = nullptr;
+          s.size_ = 0;
         }
+        return *this;
+      }
 
-    };
-} // namespace s21
+    private:
+      struct Node {
+        value_type value_;
+        Node *prev_;
 
+        explicit Node(const T &value = 0) : value_(value), prev_(nullptr) {}
 
-#endif  // _STACK_H_
+        Node *head_ = nullptr;
+        size_type size_ = 0;
+      };
+
+      Node *head_;
+      size_type size_;
+};
+}
+
+#endif  // S21_STACK_H_
