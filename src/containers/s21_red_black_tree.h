@@ -1,5 +1,5 @@
-#ifndef CONTEINERS_S21_RED_BLACK_TREE_H
-#define CONTEINERS_S21_RED_BLACK_TREE_H
+#ifndef CONTAINERS_S21_RED_BLACK_TREE_H
+#define CONTAINERS_S21_RED_BLACK_TREE_H
 
 #include <functional>
 #include <limits>
@@ -279,7 +279,7 @@ private:
   }
 
   treeNode *CopyTree(const treeNode *node, treeNode *parent) {
-    treeNode *copy = new treeNode{node->key, node->color};
+    auto *copy = new treeNode{node->key, node->color};
 
     try {
       if (node->left) {
@@ -889,4 +889,4 @@ private:
 };
 };
 
-#endif // CONTEINERS_S21_RED_BLACK_TREE_H
+#endif // CONTAINERS_S21_RED_BLACK_TREE_H

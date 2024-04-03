@@ -1,12 +1,11 @@
+#ifndef CONTAINERS_S21_MAP_H
+#define CONTAINERS_S21_MAP_H
 
-#ifndef CONTEINERS_S21_MAP_H
-
-#include <functional>
-#include <limits>
+#include <stdexcept>
+#include "s21_red_black_tree.h"
 
 namespace s21 {
-template <class Key, class Type>
-class Map {
+template <class Key, class Type> class Map {
 public:
   using key_type = Key;
   using mapped_type = Type;
@@ -21,15 +20,116 @@ public:
     }
   };
 
+  using treeType = RBTree<value_type, MapValueComparator>;
+  using iterator = typename treeType::iterator;
+  using const_iterator = typename treeType::constIterator;
+  using size_type = std::size_t;
 
+  Map() : tree(new treeType{}) {}
 
+  Map(std::initializer_list<value_type> const &items) : Map() {
+    for (auto item : items) {
+      insert(item);
+    }
+  }
 
+  Map(const Map &other) : tree(new treeType(*other.tree)) {}
+
+  Map(Map &&other) noexcept : tree(new treeType(std::move(*other.tree))) {}
+
+  Map &operator=(const Map &other) noexcept {
+    *tree = *other.tree;
+    return *this;
+  }
+
+  Map &operator=(Map &&other) noexcept {
+    *tree = std::move(*other.tree);
+    return *this;
+  }
+
+  ~Map() {
+    delete tree;
+    tree = nullptr;
+  }
+
+  mapped_type &at(const key_type &key) {
+    value_type search_pair(key, mapped_type{});
+    iterator it = tree->Find(search_pair);
+
+    if (it == end()) {
+      throw std::out_of_range("s21::map::at: Element is not exists");
+    } else {
+      return (*it).second;
+    }
+  }
+
+  const mapped_type &at(const key_type &key) const {
+    return const_cast<Map<Key, Type> *>(this)->at(key);
+  }
+
+  mapped_type &operator[](const key_type &key) {
+    value_type search_pair(key, mapped_type{});
+    iterator it = tree->Find(search_pair);
+
+    if (it == end()) {
+      std::pair<iterator, bool> result = tree->InsertUnique(search_pair);
+      return (*result.first).second;
+    } else {
+      return (*it).second;
+    }
+  }
+
+  iterator begin() noexcept { return tree->Begin(); }
+  const_iterator begin() const noexcept { return tree->Begin(); }
+
+  iterator end() noexcept { return tree->End(); }
+  const_iterator end() const noexcept { return tree->End(); }
+
+  [[nodiscard]] bool empty() const noexcept { return tree->Empty(); }
+  [[nodiscard]] size_type size() const noexcept { return tree->Size(); }
+  [[nodiscard]] size_type max_size() const noexcept { return tree->MaxSize(); }
+  void clear() noexcept { tree->Clear(); }
+
+  std::pair<iterator, bool> insert(const value_type &value) {
+    return tree->InsertUnique(value);
+  }
+
+  std::pair<iterator, bool> insert(const key_type &key,
+                                   const mapped_type &obj) {
+    return tree->InsertUnique(value_type{key, obj});
+  }
+
+  std::pair<iterator, bool> insert_or_assign(const key_type &key,
+                                             const mapped_type &obj) {
+    iterator res = tree->Find(value_type{key, obj});
+
+    if (res == end()) {
+      return tree->InsertUnique(value_type{key, obj});
+    }
+    (*res).second = obj;
+
+    return {res, false};
+  }
+
+  void erase(iterator pos) noexcept { tree->Erase(pos); }
+
+  void merge(Map &other) noexcept { tree->MergeUnique(*other.tree); }
+
+  bool contains(const key_type &key) const noexcept {
+    value_type search_pair(key, mapped_type{});
+    iterator it = tree->Find(search_pair);
+    return end() != it;
+  }
+
+  template <typename... Args>
+  std::vector<std::pair<iterator, bool>> emplace(Args &&...args) {
+    return tree->EmplaceUnique(std::forward<Args>(args)...);
+  }
+
+private:
+  treeType *tree;
 };
+
 }
 
-
-
-
-#define CONTEINERS_S21_MAP_H
-
-#endif // CONTEINERS_S21_MAP_H
+#endif // CONTAINERS_S21_MAP_H
