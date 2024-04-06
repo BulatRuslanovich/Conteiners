@@ -3,7 +3,8 @@ CFLAGS = -Wall -Werror -Wextra -std=c++17 -lstdc++
 
 
 test: clean
-	g++ tests/main.cpp tests/s21_list_test.cpp tests/s21_map_test.cpp tests/s21_stack_test.cc  tests/s21_set_test.cpp containers/s21_list.h  containers/s21_stack.h containers/s21_map.h containers/s21_set.h -lgtest -o test
+	#g++ tests/main.cpp tests/s21_list_test.cpp tests/s21_map_test.cpp tests/s21_stack_test.cpp  tests/s21_set_test.cpp containers/s21_list.h  containers/s21_stack.h containers/s21_map.h containers/s21_set.h -lgtest -o test
+	g++ tests/main.cpp tests/s21_vector_test.cpp containers/s21_vector.h -lgtest -o test
 	./test
 
 gcov: report

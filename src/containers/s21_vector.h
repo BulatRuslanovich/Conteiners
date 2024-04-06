@@ -29,11 +29,19 @@ public:
     for (auto item : items) {
       push_back(item);
     }
+
+    shrink_to_fit();
   }
 
   vector(const vector &v) {
-    vector_ = new value_type[v.buf_];
-    *this = v;
+    size_ = v.size_;
+    buf_ = v.buf_;
+    vector_ = nullptr;
+    if (size_ > 0) {
+      vector_ = new value_type[buf_];
+    }
+
+    std::copy(v.begin(), v.end(), vector_);
   }
 
   vector(vector &&v) {
@@ -47,10 +55,19 @@ public:
     vector_ = nullptr;
   }
 
-  vector &operator=(const vector &v) noexcept {
-    std::copy(v.vector_, v.vector_ + v.size_, vector_);
-    size_ = v.size_;
-    buf_ = v.buf_;
+  vector &operator=(const vector &v) {
+    if (this != &v) {
+      delete[] vector_;
+
+      if (v.size_ > 0) {
+        vector_ = new value_type[v.buf_];
+        std::copy(v.begin(), v.end(), vector_);
+      }
+
+      size_ = v.size_;
+      buf_ = v.buf_;
+    }
+
     return *this;
   }
 
@@ -73,17 +90,35 @@ public:
 
 
   iterator begin() {
-    return size_ > 0 ? &vector_[0] : 0;
+      return vector_;
   }
 
   iterator end() {
-    return size_ > 0 ? &vector_[size_] : 0;
+    return vector_ + size_;
+  }
+
+  const_iterator begin() const {
+    return vector_;
+  }
+
+  const_iterator end() const {
+    return vector_ + size_;
   }
 
   iterator insert(iterator pos, const_reference value) {
-    size_type position = pos - &vector_[0];
-    vector_[position] = value;
-    return &vector_[position];
+    size_type index = pos - begin();
+    if (index > size_) {
+      throw std::out_of_range("Unable to insert into a position");
+    }
+
+    if (size_ == buf_)
+      reserve(size_ ? size_ * 2 : 1);
+
+    std::copy(begin() + index, end(), begin() + index + 1);
+    *(vector_ + index) = value;
+
+    ++size_;
+    return begin() + index;
   }
 
   reference at(size_type pos) {
@@ -127,25 +162,21 @@ public:
   }
 
   void reserve(size_type size) {
-    if (size > buf_) {
-      value_type *new_vector_ = new value_type[size];
-      std::copy(vector_, vector_ + size_, new_vector_);
-      delete[] vector_;
-      vector_ = new_vector_;
-      buf_ = size;
-    }
+    if (size <= buf_) return;
+
+    ReallocVec(size);
   }
+
+
 
   size_type capacity() {
     return buf_;
   }
 
   void shrink_to_fit() {
-    value_type *new_vector_ = new value_type[size_];
-    std::copy(vector_, vector_ + size_, new_vector_);
-    delete[] vector_;
-    vector_ = new_vector_;
-    buf_ = size_;
+    if (buf_ == size_) return;
+
+    ReallocVec(size_);
   }
 
   void clear() {
@@ -179,12 +210,43 @@ public:
     std::swap(buf_, other.buf_);
   }
 
+  template <typename... Args>
+  constexpr iterator emplace(const_iterator pos, Args &&...args) {
+    iterator ret = nullptr;
+    auto id = pos - begin();
+    reserve(buf_ + sizeof...(args));
+
+    for (auto &&item : {std::forward<Args>(args)...})
+      ret = insert(begin() + id, item);
+
+    return ret;
+  }
+
+
+  template <typename... Args>
+  constexpr iterator emplace_back(Args &&...args) {
+    for (auto &&item : {std::forward<Args>(args)...}) {
+      push_back(item);
+    }
+    return end() - 1;
+  }
+
+
  private:
   size_type size_ = 0;
   size_type buf_ = 0;
   value_type *vector_ = nullptr;
   // qwefrgtfhfgdrsewrqefre
   //(исторический момент) НЕ УДАЛЯТЬ!
+
+  void ReallocVec(size_type size) {
+    auto tmp = new value_type[size];
+    for (size_type i = 0; i < size_; ++i) tmp[i] = std::move(vector_[i]);
+
+    delete[] vector_;
+    vector_ = tmp;
+    buf_ = size;
+  }
 
 };
 }  // namespace s21

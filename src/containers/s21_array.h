@@ -58,6 +58,7 @@ public:
 
     return *this;
   }
+
   array &operator=(array &&a) noexcept {
     for (size_t i = 0; i < N; ++i) {
       array_[i] = std::move(a.array_[i]);
@@ -88,7 +89,7 @@ public:
       throw std::out_of_range("Array is empty");
     }
 
-    return array_[N];
+    return array_[N - 1];
   }
 
   bool empty() { return begin() == end(); }
