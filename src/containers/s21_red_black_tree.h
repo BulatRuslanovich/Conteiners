@@ -331,7 +331,7 @@ private:
         node = node->left;
       } else {
         if (!unique ||
-            cmp(node->key, newNode->key)) { // TODO: не продуманный участок
+            cmp(node->key, newNode->key)) {
           node = node->right;
         } else {
           return {iterator(node), false};
@@ -453,7 +453,7 @@ private:
   }
 
   void RotateLeft(treeNode *node) noexcept {
-     treeNode *const pivot = node->right;
+    treeNode *const pivot = node->right;
     pivot->parent = node->parent;
 
     if (node == Root()) {
@@ -636,7 +636,7 @@ private:
           if (brother->right != nullptr && brother->right->color == Red &&
               (brother->left == nullptr || brother->left->color == Black)) {
             std::swap(brother->color, brother->right->color);
-            RotateRight(brother);
+            RotateLeft(brother);
             brother = parent->left;
           }
 
@@ -725,7 +725,7 @@ private:
           color(Red) {}
 
     RBTreeNode(keyType key, treeColor color)
-        : parent(nullptr), left(this), right(this), key(key), color(color){};
+        : parent(nullptr), left(nullptr), right(nullptr), key(key), color(color){};
 
     void ToDefault() noexcept {
       left = nullptr;

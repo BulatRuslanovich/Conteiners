@@ -2,5 +2,7 @@
 #define SRC_S21_CONTAINERS_H
 
 #include "containers/s21_list.h"
+#include "containers/s21_map.h"
+#include "containers/s21_set.h"
 
 #endif // SRC_S21_CONTAINERS_H

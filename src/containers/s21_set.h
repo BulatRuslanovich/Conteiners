@@ -4,7 +4,7 @@
 #include "s21_red_black_tree.h"
 
 namespace s21 {
-template <class Key> class Set {
+template <class Key> class set {
 public:
   using key_type = Key;
   using value_type = key_type;
@@ -15,29 +15,29 @@ public:
   using const_iterator = typename treeType::constIterator;
   using size_type = std::size_t;
 
-  Set() : tree(new treeType{}) {}
+  set() : tree(new treeType{}) {}
 
-  Set(std::initializer_list<value_type> const &items) : Set() {
+  set(std::initializer_list<value_type> const &items) : set() {
     for (auto item : items) {
       insert(item);
     }
   }
 
-  Set(const Set &other) : tree(new treeType(*other.tree)) {}
+  set(const set &other) : tree(new treeType(*other.tree)) {}
 
-  Set(Set &&other) noexcept : tree(new treeType(std::move(*other.tree))) {}
+  set(set &&other) noexcept : tree(new treeType(std::move(*other.tree))) {}
 
-  Set &operator=(const Set &other) {
+  set &operator=(const set &other) {
     *tree = *other.tree;
     return *this;
   }
 
-  Set &operator=(Set &&other) noexcept {
+  set &operator=(set &&other) noexcept {
     *tree = std::move(*other.tree);
     return *this;
   }
 
-  ~Set() {
+  ~set() {
     delete tree;
     tree = nullptr;
   }
@@ -55,8 +55,8 @@ public:
   }
 
   void erase(iterator pos) noexcept { tree->Erase(pos); }
-  void swap(Set &other) noexcept { tree->Swap(*other.tree); }
-  void merge(Set &other) noexcept { tree->MergeUnique(*other.tree); }
+  void swap(set &other) noexcept { tree->Swap(*other.tree); }
+  void merge(set &other) noexcept { tree->MergeUnique(*other.tree); }
   iterator find(const key_type &key) noexcept { return tree->Find(key); }
   const_iterator find(const key_type &key) const noexcept {
     return tree->Find(key);

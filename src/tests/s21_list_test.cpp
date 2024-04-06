@@ -1,24 +1,24 @@
 #include <list>
 #include "gtest/gtest.h"
 #include "test.h"
-    
+
 TEST(list, Create) {
   std::list<int> stdList;
-  s21::List<int> ourList;
+  s21::list<int> ourList;
 
   EXPECT_EQ(stdList.empty(), ourList.empty());
 }
 
 TEST(list, size) {
   std::list<int> stdList = {1, 2, 3};
-  s21::List<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2 ,3};
 
   EXPECT_EQ(stdList.size(), ourList.size());
 }
 
 TEST(list, push) {
   std::list<int> stdList = {1};
-  s21::List<int> ourList = {1};
+  s21::list<int> ourList = {1};
 
   stdList.push_front(2);
   ourList.push_front(2);
@@ -31,7 +31,7 @@ TEST(list, push) {
 
 TEST(list, pop) {
   std::list<int> stdList = {1, 2, 3};
-  s21::List<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2 ,3};
 
   stdList.pop_front();
   ourList.pop_front();
@@ -44,9 +44,9 @@ TEST(list, pop) {
 
 TEST(list, front_back) {
   std::list<int> const stdListConst = {1, 2, 3};
-  s21::List<int> const ourListConst = {1, 2 ,3};
+  s21::list<int> const ourListConst = {1, 2 ,3};
   std::list<int> stdList = {1, 2, 3};
-  s21::List<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2 ,3};
 
   EXPECT_EQ(stdListConst.front(), ourListConst.front());
   EXPECT_EQ(stdListConst.back(), ourListConst.back());
@@ -56,14 +56,14 @@ TEST(list, front_back) {
 
 TEST(list, max_size) {
   std::list<int> stdList = {1, 2, 3};
-  s21::List<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2 ,3};
 
   EXPECT_EQ(stdList.max_size(), ourList.max_size() + 1);
 }
 
 TEST(list, sort) {
   std::list<int> stdList = {45, 3, 54, 46, 56, 3, 5, 53, 4, 5};
-  s21::List<int> ourList = {45, 3, 54, 46, 56, 3, 5, 53, 4, 5};
+  s21::list<int> ourList = {45, 3, 54, 46, 56, 3, 5, 53, 4, 5};
 
   stdList.sort();
   ourList.sort();

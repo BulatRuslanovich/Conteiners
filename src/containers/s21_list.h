@@ -8,7 +8,7 @@
 #include <iostream>
 
 namespace s21 {
-template <typename T> class List {
+template <typename T> class list {
 private:
   struct ListIterator;
   struct ListConstIterator;
@@ -22,35 +22,35 @@ public:
   using const_iterator = const ListConstIterator;
   using size_type = std::size_t;
 
-  List() : _head(new Node{}), _size(0U){};
+  list() : _head(new Node{}), _size(0U){};
 
-  explicit List(size_type n) : List() {
+  explicit list(size_type n) : list() {
     for (int i = 0; i < n; ++i) {
       push_back(value_type{});
     }
   }
 
-  List(std::initializer_list<value_type> const &items) : List() {
+  list(std::initializer_list<value_type> const &items) : list() {
     for (auto item : items) {
       push_back(item);
     }
   }
 
-  List(const List &l) : List() {
+  list(const list &l) : list() {
     for (auto item : l) {
       push_back(item);
     }
   }
 
-  List(List &&l) noexcept : List()  { splice(begin(), l); }
+  list(list &&l) noexcept : list()  { splice(begin(), l); }
 
-  ~List() {
+  ~list() {
     clear();
     delete _head;
     _head = nullptr;
   }
 
-  List &operator=(const List &other) noexcept {
+  list &operator=(const list &other) noexcept {
     if (this != &other) {
       iterator ourBegin = begin();
       iterator ourEnd = end();
@@ -78,7 +78,7 @@ public:
     return *this;
   }
 
-  List &operator=(List &&l) noexcept {
+  list &operator=(list &&l) noexcept {
     if (this != &l) {
       clear();
       splice(begin(), l);
@@ -135,14 +135,14 @@ public:
   void push_front(const_reference value) { insert(begin(), value); }
 
   void pop_front() { erase(begin()); }
-  void swap(List &other) {
+  void swap(list &other) {
     if (this != &other) {
       std::swap(this->_head, other._head);
       std::swap(this->_size, other._size);
     }
   }
 
-  void merge(List &other) {
+  void merge(list &other) {
     if (this != &other) {
       iterator ourBegin = begin();
       iterator ourEnd = end();
@@ -167,7 +167,7 @@ public:
     }
   }
 
-  void splice(const_iterator pos, List &other) noexcept {
+  void splice(const_iterator pos, list &other) noexcept {
     if (!other.empty()) {
       iterator itCurrent{const_cast<Node *>(pos._node)};
       iterator itOther = other.end();
@@ -330,7 +330,7 @@ private:
   struct ListIterator {
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
-    using value_type = List::value_type;
+    using value_type = list::value_type;
     using pointer = value_type*;
     using reference = value_type&;
 
@@ -374,7 +374,7 @@ private:
     // это что-то типа наследования от интерфейса
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
-    using value_type = List::value_type;
+    using value_type = list::value_type;
     using pointer = const value_type*;
     using reference = const value_type&;
 

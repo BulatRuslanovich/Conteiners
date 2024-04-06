@@ -5,7 +5,7 @@
 #include "s21_red_black_tree.h"
 
 namespace s21 {
-template <class Key, class Type> class Map {
+template <class Key, class Type> class map {
 public:
   using key_type = Key;
   using mapped_type = Type;
@@ -25,29 +25,29 @@ public:
   using const_iterator = typename treeType::constIterator;
   using size_type = std::size_t;
 
-  Map() : tree(new treeType{}) {}
+  map() : tree(new treeType{}) {}
 
-  Map(std::initializer_list<value_type> const &items) : Map() {
+  map(std::initializer_list<value_type> const &items) : map() {
     for (auto item : items) {
       insert(item);
     }
   }
 
-  Map(const Map &other) : tree(new treeType(*other.tree)) {}
+  map(const map &other) : tree(new treeType(*other.tree)) {}
 
-  Map(Map &&other) noexcept : tree(new treeType(std::move(*other.tree))) {}
+  map(map &&other) noexcept : tree(new treeType(std::move(*other.tree))) {}
 
-  Map &operator=(const Map &other) noexcept {
+  map &operator=(const map &other) noexcept {
     *tree = *other.tree;
     return *this;
   }
 
-  Map &operator=(Map &&other) noexcept {
+  map &operator=(map &&other) noexcept {
     *tree = std::move(*other.tree);
     return *this;
   }
 
-  ~Map() {
+  ~map() {
     delete tree;
     tree = nullptr;
   }
@@ -64,7 +64,7 @@ public:
   }
 
   const mapped_type &at(const key_type &key) const {
-    return const_cast<Map<Key, Type> *>(this)->at(key);
+    return const_cast<map<Key, Type> *>(this)->at(key);
   }
 
   mapped_type &operator[](const key_type &key) {
@@ -113,7 +113,9 @@ public:
 
   void erase(iterator pos) noexcept { tree->Erase(pos); }
 
-  void merge(Map &other) noexcept { tree->MergeUnique(*other.tree); }
+  void swap(map &other) noexcept { tree->Swap(*other.tree); }
+
+  void merge(map &other) noexcept { tree->MergeUnique(*other.tree); }
 
   bool contains(const key_type &key) const noexcept {
     value_type search_pair(key, mapped_type{});
@@ -129,6 +131,8 @@ public:
 private:
   treeType *tree;
 };
+
+
 }// namespace s21
 
 #endif // CONTAINERS_S21_MAP_H
