@@ -2,5 +2,6 @@
 #define SRC_S21_CONTAINERS_H
 
 #include "containers/s21_stack.h"
+#include "containers/s21_array.h"
 
 #endif // SRC_S21_CONTAINERS_H

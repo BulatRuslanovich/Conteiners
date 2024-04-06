@@ -4,160 +4,110 @@
 #include <iostream>
 
 
-    
-template <class T, std::size_t N>
-    
-class array{
-    private:
-    value_type array_[N] = {};
-    size_type size_ = N;
+namespace s21 {
+template <class T, std::size_t N> class array {
+public:
+  using value_type = T;
+  using reference = T &;
+  using const_reference = const T &;
+  using size_type = std::size_t;
+  using iterator = T *;
+  using const_iteratir = const T *;
 
-    //Consr-s
-    array();
-    array(std::initializer_list<value_type> const &items);
-    array(const array &a);
-    array(array &&a);
+private:
+  value_type array_[N] = {};
+  size_type size_;
 
-    //Dest-r
-    ~array()
-        
-    //Type
-    using value_type = T;
-    using reference = T &;
-    using const_reference = const T &;
-    using iterator = T *;
-    using const_iteratir = const T*;
-    using size_type = std::size_t;
+public:
+  array() : size_(N) {}
 
-    //Iter
-    iterator data();
-    iterator begin();
-    iterator end();
-
-    //Operators
-    array &operator=(const array &a) noexcept;
-    array &operator=(array &&a) noexcept;
-    reference operator[](size_type pos);
-
-    //FUNC
-    reference at(size_type pos);
-    const_reference front();
-    const_reference back();
-    bool empty();
-    size_type size();
-    size_type max_size();
-    void swap(array &other);
-    void fill(const_reference value);
-
-    void print()
-
-    //Realization
-    //Constructors
-    template <class T, std::size_t N>
-    array<T, N>::array() : size(N) {}
-    template <class T, std::size_t N>
-    array<T, N>::array(std::initializer_list<value_type> const &items) {
-        for (auto iter = items.begin(), i = 0; iter != items.end(); ++iter, ++i) {
-            array_[i] = *iter;
-        }
+  array(std::initializer_list<value_type> const &items) : array() {
+    int i = 0;
+    for (auto item : items) {
+      if (i < N) {
+        array_[i] = item;
+        ++i;
+      }
     }
-    template <class T, std::size_t N>
-    array<T, N>::array(const array &a) { *this = a; }
+  }
 
-    template <class T, std::size_t N>
-    array<T, N>::array(array &&a) { *this = std::move(a); }
-
-    //Destr
-    template <class T, std::size_t N>
-    array<T, N>::~array() { size_ = 0 }
-
-    //Oper-s
-    template <class T, std::size_t N>
-    array<T, N> &array<T,N>::operator=(const array &a) noexcept {
-        std::copy(a.array_, a.array_ + N, array_);
-        return *this;
+  array(const array &a) : array() {
+    for (int i = 0; i < N; ++i) {
+      array_[i] = a.array_[i];
     }
-    template <class T, std::size_t N>
-    array<T, N> &array<T, N>::operator=(array &&a) noexcept {
+  }
+
+  array(array &&a) : array() {
+    for (int i = 0; i < N; ++i) {
+      array_[i] = std::move(a.array_[i]);
+    }
+  }
+
+  ~array() { size_ = 0; }
+
+  iterator data() { return N > 0 ? array_ : 0; }
+
+  iterator begin() { return N > 0 ? array_ : 0; }
+
+  iterator end() { return N > 0 ? array_ + N : 0; }
+
+  array &operator=(const array &a) noexcept {
     for (size_t i = 0; i < N; ++i) {
-        array_[i] = std::move(a.array_[i]);
-        a.array_[i] = 0;
-        }
-        return *this;
-    }
-    template <class T, std::size_t N>
-    typename array<T, N>::reference array<T, N>::operator[](size_type pos) {
-        return array_[pos];
-    }
-    //iter
-    template <class T, std::size_t N>
-    typename array<T, N>::iterator array<T, N>::data() {
-        return N > 0 ? &array_[0] : 0;
+      array_[i] = a.array_[i];
     }
 
-    template <class T, std::size_t N>
-    typename array<T, N>::iterator array<T, N>::begin() {
-        return N > 0 ? &array_[0] : 0;
+    return *this;
+  }
+  array &operator=(array &&a) noexcept {
+    for (size_t i = 0; i < N; ++i) {
+      array_[i] = std::move(a.array_[i]);
     }
 
-    template <class T, std::size_t N>
-    typename array<T, N>::iterator array<T, N>::end() {
-        return N > 0 ? &array_[N] : 0;
-    }
-    //func
-    template <class T, std::size_t N>
-    typename array<T, N>::reference array<T, N>::at(size_type pos) {
-    if (pos >= N) throw std::out_of_range("Out of range");
-       return array_[pos];
+    return *this;
+  }
+
+  reference operator[](size_type pos) { return at(pos); }
+
+  reference at(size_type pos) {
+    if (pos >= N) {
+      throw std::out_of_range("Out of range");
     }
 
-    template <class T, std::size_t N>
-    typename array<T, N>::const_reference array<T, N>::front() {
-    if (empty()) throw "Array is empty";
-       return array_[0];
+    return array_[pos];
+  }
+
+  const_reference front() {
+    if (empty()) {
+      throw std::out_of_range("Array is empty");
     }
 
-    template <class T, std::size_t N>
-    typename array<T, N>::const_reference array<T, N>::back() {
-    if (empty()) throw "Array is empty";
-        return array_[N - 1];
+    return array_[0];
+  }
+  const_reference back() {
+    if (empty()) {
+      throw std::out_of_range("Array is empty");
     }
 
-    template <class T, std::size_t N>
-    bool array<T, N>::empty() {
-        return N > 0 ? false : true;
-    }
+    return array_[N];
+  }
 
-    template <class T, std::size_t N>
-    typename array<T, N>::size_type array<T, N>::size() {
-        return size_;
-    }
+  bool empty() { return begin() == end(); }
 
-    template <class T, std::size_t N>
-    typename array<T, N>::size_type array<T, N>::max_size() {
-        return N;
-    }
+  size_type size() { return N; }
 
-    template <class T, std::size_t N>
-    void array<T, N>::swap(array &other) {
+  size_type max_size() { return std::distance(begin(), end()); }
+
+  void swap(array &other) {
     std::swap(array_, other.array_);
     std::swap(size_, other.size_);
-    }
+  }
 
-    template <class T, std::size_t N>
-    void array<T, N>::fill(const_reference value) {
+  void fill(const_reference value) {
     for (size_t i = 0; i < N; ++i) {
-        array_[i] = value;
+      array_[i] = value;
     }
-    }
-
-    template <class T, std::size_t N>
-    void array<T, N>::print() {
-    for (size_t i = 0; i < N; ++i) {
-        std::cout << array_[i];
-    }
-    std::cout << std::endl;
+  }
 };
-};
+}
 
 #endif
