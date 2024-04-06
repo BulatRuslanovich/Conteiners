@@ -44,7 +44,6 @@ namespace s21 {
         }
       }
 
-      // TODO: надо  переделать, по идеи работает не как задумано
       stack(stack &&s) noexcept {
         head_ = s.head_;
         size_ = s.size_;
@@ -53,7 +52,7 @@ namespace s21 {
       }
 
       ~stack() {
-        while (this->empty()) {
+        while (!this->empty()) {
           this->pop();
         }
       }
