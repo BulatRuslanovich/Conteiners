@@ -18,4 +18,3 @@ cpplint:
 	clang-format -n --verbose tests/*.cpp containers/*.h
 valgrind:
 	valgrind  --tool=memcheck --track-fds=yes --trace-children=yes --track-origins=yes --leak-check=full --show-leak-kinds=all -s ./test
-
