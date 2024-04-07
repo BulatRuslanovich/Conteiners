@@ -7,7 +7,7 @@
 namespace s21 {
 template <class T>
 class vector {
-public:
+ public:
   using value_type = T;
   using reference = T &;
   using const_reference = const T &;
@@ -17,7 +17,6 @@ public:
 
  public:
   vector() : size_(0), buf_(0) {}
-
 
   vector(size_type n) {
     vector_ = new value_type[n];
@@ -44,9 +43,7 @@ public:
     std::copy(v.begin(), v.end(), vector_);
   }
 
-  vector(vector &&v) {
-    *this = std::move(v);
-  }
+  vector(vector &&v) { *this = std::move(v); }
 
   ~vector() {
     delete[] vector_;
@@ -84,26 +81,15 @@ public:
     return *this;
   }
 
-  reference operator[](size_type pos) {
-    return vector_[pos];
-  }
+  reference operator[](size_type pos) { return vector_[pos]; }
 
+  iterator begin() { return vector_; }
 
-  iterator begin() {
-      return vector_;
-  }
+  iterator end() { return vector_ + size_; }
 
-  iterator end() {
-    return vector_ + size_;
-  }
+  const_iterator begin() const { return vector_; }
 
-  const_iterator begin() const {
-    return vector_;
-  }
-
-  const_iterator end() const {
-    return vector_ + size_;
-  }
+  const_iterator end() const { return vector_ + size_; }
 
   iterator insert(iterator pos, const_reference value) {
     size_type index = pos - begin();
@@ -111,8 +97,7 @@ public:
       throw std::out_of_range("Unable to insert into a position");
     }
 
-    if (size_ == buf_)
-      reserve(size_ ? size_ * 2 : 1);
+    if (size_ == buf_) reserve(size_ ? size_ * 2 : 1);
 
     std::copy(begin() + index, end(), begin() + index + 1);
     *(vector_ + index) = value;
@@ -122,7 +107,8 @@ public:
   }
 
   reference at(size_type pos) {
-    if (pos >= buf_) throw std::out_of_range("Current element outside the array");
+    if (pos >= buf_)
+      throw std::out_of_range("Current element outside the array");
     return vector_[pos];
   }
 
@@ -150,13 +136,9 @@ public:
     return &vector_[0];
   }
 
-  bool empty() {
-    return vector_ == nullptr;
-  }
+  bool empty() { return vector_ == nullptr; }
 
-  size_type size() {
-    return size_;
-  }
+  size_type size() { return size_; }
   size_type max_size() {
     return std::numeric_limits<size_type>::max() / sizeof(value_type) / 2;
   }
@@ -167,11 +149,7 @@ public:
     ReallocVec(size);
   }
 
-
-
-  size_type capacity() {
-    return buf_;
-  }
+  size_type capacity() { return buf_; }
 
   void shrink_to_fit() {
     if (buf_ == size_) return;
@@ -179,17 +157,17 @@ public:
     ReallocVec(size_);
   }
 
-  void clear() {
-    size_ = 0;
-  }
+  void clear() { size_ = 0; }
 
-  void erase(iterator pos) {
-    if (pos > end()) pos = end();
-    if (pos < begin()) pos = begin();
-    for (iterator i = pos; i < end(); ++i) {
-      *i = *(i + 1);
-    }
-    size_--;
+  iterator erase(iterator pos) {
+    size_type index = pos - begin();
+    if (index >= size_) throw std::out_of_range("Unable to erase a position");
+
+    std::copy(begin(), const_cast<iterator>(pos), vector_);
+    std::copy(const_cast<iterator>(pos) + 1, end(), vector_ + index);
+
+    --size_;
+    return begin() + index;
   }
 
   void push_back(const_reference value) {
@@ -200,9 +178,7 @@ public:
     vector_[size_++] = value;
   }
 
-  void pop_back() {
-    size_--;
-  }
+  void pop_back() { size_--; }
 
   void swap(vector &other) {
     std::swap(vector_, other.vector_);
@@ -211,7 +187,7 @@ public:
   }
 
   template <typename... Args>
-  constexpr iterator emplace(const_iterator pos, Args &&...args) {
+  constexpr iterator insert_many(const_iterator pos, Args &&...args) {
     iterator ret = nullptr;
     auto id = pos - begin();
     reserve(buf_ + sizeof...(args));
@@ -222,15 +198,13 @@ public:
     return ret;
   }
 
-
   template <typename... Args>
-  constexpr iterator emplace_back(Args &&...args) {
+  constexpr iterator insert_many_back(Args &&...args) {
     for (auto &&item : {std::forward<Args>(args)...}) {
       push_back(item);
     }
     return end() - 1;
   }
-
 
  private:
   size_type size_ = 0;
@@ -247,7 +221,6 @@ public:
     vector_ = tmp;
     buf_ = size;
   }
-
 };
 }  // namespace s21
 #endif  // _VECTOR_H_

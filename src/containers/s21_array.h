@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-
 namespace s21 {
-template <class T, std::size_t N> class array {
-public:
+template <class T, std::size_t N>
+class array {
+ public:
   using value_type = T;
   using reference = T &;
   using const_reference = const T &;
@@ -14,17 +14,17 @@ public:
   using iterator = T *;
   using const_iteratir = const T *;
 
-private:
+ private:
   value_type array_[N] = {};
   size_type size_;
 
-public:
+ public:
   array() : size_(N) {}
 
   array(std::initializer_list<value_type> const &items) : array() {
     int i = 0;
     for (auto item : items) {
-      if (i < N) {
+      if ((size_t)i < N) {
         array_[i] = item;
         ++i;
       }
@@ -32,13 +32,13 @@ public:
   }
 
   array(const array &a) : array() {
-    for (int i = 0; i < N; ++i) {
+    for (size_t i = 0; i < N; ++i) {
       array_[i] = a.array_[i];
     }
   }
 
   array(array &&a) : array() {
-    for (int i = 0; i < N; ++i) {
+    for (size_t i = 0; i < N; ++i) {
       array_[i] = std::move(a.array_[i]);
     }
   }
@@ -109,6 +109,6 @@ public:
     }
   }
 };
-}
+}  // namespace s21
 
 #endif

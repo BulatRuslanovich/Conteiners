@@ -1,20 +1,20 @@
 #ifndef SRC_S21_LIST_H
 #define SRC_S21_LIST_H
 
-
 #include <initializer_list>
-#include <limits>
-#include <iterator>
 #include <iostream>
+#include <iterator>
+#include <limits>
 
 namespace s21 {
-template <typename T> class list {
-private:
+template <typename T>
+class list {
+ private:
   struct ListIterator;
   struct ListConstIterator;
   struct Node;
 
-public:
+ public:
   using value_type = T;
   using reference = T &;
   using const_reference = const T &;
@@ -42,7 +42,7 @@ public:
     }
   }
 
-  list(list &&l) noexcept : list()  { splice(begin(), l); }
+  list(list &&l) noexcept : list() { splice(begin(), l); }
 
   ~list() {
     clear();
@@ -162,7 +162,6 @@ public:
         }
       }
 
-
       splice(end(), other);
     }
   }
@@ -217,7 +216,31 @@ public:
 
   void sort() { quickSort(begin(), --end(), _size); }
 
-private:
+  template <typename... Args>
+  iterator insert_many(const_iterator pos, Args &&...args) {
+    iterator it{const_cast<Node *>(pos._node)};
+    Node *newNode;
+
+    for (auto item : {std::forward<Args>(args)...}) {
+      newNode = new Node(std::move(item));
+      it._node->linkPrev(newNode);
+      ++_size;
+    }
+
+    return iterator(newNode);
+  }
+
+  template <typename... Args>
+  void insert_many_back(Args &&...args) {
+    insert_many(end(), std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  void insert_many_front(Args &&...args) {
+    insert_many(begin(), std::forward<Args>(args)...);
+  }
+
+ private:
   void quickSort(iterator left, iterator right, size_type size) {
     if (left != right && size > 1) {
       iterator swapIt = left;
@@ -274,29 +297,6 @@ private:
     }
   }
 
-
-  template <typename... Args>
-  iterator emplace(const_iterator pos, Args &&...args) {
-    iterator it{const_cast<Node *>(pos._node)};
-    Node *newNode;
-
-    for (auto item : {std::forward<Args>(args)...}) {
-      newNode = new Node(std::move(item));
-      it._node->linkPrev(newNode);
-      ++_size;
-    }
-
-    return iterator(newNode);
-  }
-
-  template <typename... Args> void emplace_back(Args &&...args) {
-    emplace(end(), std::forward<Args>(args)...);
-  }
-
-  template <typename... Args> void emplace_front(Args &&...args) {
-    emplace(begin(), std::forward<Args>(args)...);
-  }
-
   struct Node {
     value_type _value;
     Node *_next;
@@ -331,12 +331,12 @@ private:
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = list::value_type;
-    using pointer = value_type*;
-    using reference = value_type&;
+    using pointer = value_type *;
+    using reference = value_type &;
 
     Node *_node;
     ListIterator() = delete;
-    explicit ListIterator(Node *node) noexcept : _node(node) {};
+    explicit ListIterator(Node *node) noexcept : _node(node){};
     reference operator*() const noexcept { return _node->_value; }
 
     iterator &operator++() noexcept {
@@ -375,8 +375,8 @@ private:
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = list::value_type;
-    using pointer = const value_type*;
-    using reference = const value_type&;
+    using pointer = const value_type *;
+    using reference = const value_type &;
 
     const Node *_node;
     ListConstIterator() = delete;
@@ -407,20 +407,22 @@ private:
     }
 
     // TODO: понять почему с friend работает merge
-    friend bool operator==(const const_iterator &it1, const const_iterator &it2) noexcept {
+    friend bool operator==(const const_iterator &it1,
+                           const const_iterator &it2) noexcept {
       return it1._node == it2._node;
     }
 
-    friend bool operator!=(const const_iterator &it1, const const_iterator &it2) noexcept {
+    friend bool operator!=(const const_iterator &it1,
+                           const const_iterator &it2) noexcept {
       return it1._node != it2._node;
     }
   };
 
-private:
+ private:
   Node *_head;
   size_type _size;
 };
 
-};
+};  // namespace s21
 
-#endif // SRC_S21_LIST_H
+#endif  // SRC_S21_LIST_H

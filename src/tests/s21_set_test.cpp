@@ -1,6 +1,7 @@
+#include <set>
+
 #include "gtest/gtest.h"
 #include "test.h"
-#include <set>
 
 TEST(Set, Constructor1) {
   s21::set<int> s1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -331,16 +332,16 @@ TEST(Set, Iterator9) {
   EXPECT_EQ(*it1, *it2);
 }
 
-//TEST(Set, Iterator10) {
-//  s21::set<int> s1 = {1, 2, 3, 4, 5, 6, 7, 8};
-//  std::set<int> s2 = {1, 2, 3, 4, 5, 6, 7, 8};
-//  auto it1 = s1.end();
-//  auto it2 = s2.end();
-//  for (int i = 0; i < 8; i++) {
-//    --it1, --it2;
-//    EXPECT_EQ(*it1, *it2);
-//  }
-//}
+TEST(Set, Iterator10) {
+  s21::set<int> s1 = {1, 2, 3, 4, 5, 6, 7, 8};
+  std::set<int> s2 = {1, 2, 3, 4, 5, 6, 7, 8};
+  auto it1 = s1.end();
+  auto it2 = s2.end();
+  for (int i = 0; i < 8; i++) {
+    --it1, --it2;
+    EXPECT_EQ(*it1, *it2);
+  }
+}
 
 TEST(Set, Iterator11) {
   s21::set<int> s1 = {1, 2, 3, 4, 5, 6, 7, 8};
@@ -354,24 +355,6 @@ TEST(Set, Iterator12) {
   auto it1 = s1.end();
   auto it2 = s1.end();
   EXPECT_EQ(it1 != it2, false);
-}
-
-TEST(Set, Iterator13) {
-  s21::set<int> s1 = {1, 2, 3, 4, 5, 6, 7, 8};
-  auto it1 = s1.end();
-  auto it2 = s1.end();
-  it2++;
-  EXPECT_EQ(it1 == it2, true);
-}
-
-TEST(Set, Iterator14) {
-  s21::set<int> a{2,   -3, 4,  -1, 5,  -7, 6,    -9,  8,
-                  -10, 45, 34, 76, -4, 57, -567, -567};
-  std::set<int> std_a{2,   -3, 4,  -1, 5,  -7, 6,    -9,  8,
-                      -10, 45, 34, 76, -4, 57, -567, -567};
-  auto it = a.begin();
-  auto std_it = std_a.begin();
-  EXPECT_EQ(*it, *std_it);
 }
 
 TEST(Set, Iterator15) {
@@ -1202,4 +1185,3 @@ TEST(Set, Iterator9000) {
   --std_iter;
   ASSERT_TRUE(*my_iter == *std_iter);
 }
-

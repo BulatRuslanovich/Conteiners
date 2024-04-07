@@ -1,7 +1,8 @@
+#include <iostream>
 #include <vector>
+
 #include "gtest/gtest.h"
 #include "test.h"
-#include <iostream>
 
 template <class Type>
 bool container_comparison(std::vector<Type> &std_vector,
@@ -254,7 +255,7 @@ TEST(Vector, method_emplace) {
   s21::vector<double> s21_first = {2, 3, 4, 5};
   std::vector<double> std_first = {2, 3, 4, 5};
   std_first.emplace(std_first.begin(), 1);
-  s21_first.emplace(s21_first.begin(), 1);
+  s21_first.insert_many(s21_first.begin(), 1);
   EXPECT_TRUE(container_comparison(std_first, s21_first));
 }
 
@@ -262,7 +263,7 @@ TEST(Vector, method_emplace_back) {
   s21::vector<double> s21_first = {2, 3, 4, 5};
   std::vector<double> std_first = {2, 3, 4, 5};
   std_first.emplace_back(543.2345);
-  s21_first.emplace_back(543.2345);
+  s21_first.insert_many_back(543.2345);
   EXPECT_TRUE(container_comparison(std_first, s21_first));
 }
 

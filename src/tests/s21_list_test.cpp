@@ -1,4 +1,5 @@
 #include <list>
+
 #include "gtest/gtest.h"
 #include "test.h"
 
@@ -11,7 +12,7 @@ TEST(list, Create) {
 
 TEST(list, size) {
   std::list<int> stdList = {1, 2, 3};
-  s21::list<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2, 3};
 
   EXPECT_EQ(stdList.size(), ourList.size());
 }
@@ -31,7 +32,7 @@ TEST(list, push) {
 
 TEST(list, pop) {
   std::list<int> stdList = {1, 2, 3};
-  s21::list<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2, 3};
 
   stdList.pop_front();
   ourList.pop_front();
@@ -44,9 +45,9 @@ TEST(list, pop) {
 
 TEST(list, front_back) {
   std::list<int> const stdListConst = {1, 2, 3};
-  s21::list<int> const ourListConst = {1, 2 ,3};
+  s21::list<int> const ourListConst = {1, 2, 3};
   std::list<int> stdList = {1, 2, 3};
-  s21::list<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2, 3};
 
   EXPECT_EQ(stdListConst.front(), ourListConst.front());
   EXPECT_EQ(stdListConst.back(), ourListConst.back());
@@ -56,7 +57,7 @@ TEST(list, front_back) {
 
 TEST(list, max_size) {
   std::list<int> stdList = {1, 2, 3};
-  s21::list<int> ourList = {1, 2 ,3};
+  s21::list<int> ourList = {1, 2, 3};
 
   EXPECT_EQ(stdList.max_size(), ourList.max_size() + 1);
 }
@@ -150,19 +151,16 @@ TEST(list, reverse) {
   }
 }
 
-TEST(list, emplace) {
+TEST(list, insert_many) {
   std::list<int> stdList = {1, 3, 4, 4};
-  std::list<int> ourList = {1, 3, 4, 4};
+  s21::list<int> ourList = {1, 3, 4, 4};
 
   stdList.emplace(stdList.begin(), 24);
 
-  ourList.emplace(ourList.begin(), 24);
+  ourList.insert_many(ourList.begin(), 24);
 
   auto stdIt = stdList.begin();
   for (auto it = ourList.begin(); it != ourList.end(); ++it, ++stdIt) {
     EXPECT_EQ(*it, *stdIt);
   }
 }
-
-
-

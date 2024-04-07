@@ -1,7 +1,8 @@
 #include <stack>
+
 #include "gtest/gtest.h"
 #include "test.h"
-    
+
 TEST(StackConstructors, Default) {
   s21::stack<int> our_stack;
   std::stack<int> std_stack;

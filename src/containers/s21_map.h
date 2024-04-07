@@ -2,11 +2,13 @@
 #define CONTAINERS_S21_MAP_H
 
 #include <stdexcept>
+
 #include "s21_red_black_tree.h"
 
 namespace s21 {
-template <class Key, class Type> class map {
-public:
+template <class Key, class Type>
+class map {
+ public:
   using key_type = Key;
   using mapped_type = Type;
   using value_type = std::pair<const key_type, mapped_type>;
@@ -124,15 +126,14 @@ public:
   }
 
   template <typename... Args>
-  std::vector<std::pair<iterator, bool>> emplace(Args &&...args) {
+  std::vector<std::pair<iterator, bool>> insert_many(Args &&...args) {
     return tree->EmplaceUnique(std::forward<Args>(args)...);
   }
 
-private:
+ private:
   treeType *tree;
 };
 
+}  // namespace s21
 
-}// namespace s21
-
-#endif // CONTAINERS_S21_MAP_H
+#endif  // CONTAINERS_S21_MAP_H

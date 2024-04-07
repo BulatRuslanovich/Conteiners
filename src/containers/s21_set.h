@@ -1,11 +1,13 @@
 #ifndef CONTAINERS_S21_SET_H
 #define CONTAINERS_S21_SET_H
 #include <vector>
+
 #include "s21_red_black_tree.h"
 
 namespace s21 {
-template <class Key> class set {
-public:
+template <class Key>
+class set {
+ public:
   using key_type = Key;
   using value_type = key_type;
   using reference = value_type &;
@@ -67,12 +69,12 @@ public:
   }
 
   template <typename... Args>
-  std::vector<std::pair<iterator, bool>> emplace(Args &&...args) {
+  std::vector<std::pair<iterator, bool>> insert_many(Args &&...args) {
     return tree->EmplaceUnique(std::forward<Args>(args)...);
   }
 
-private:
+ private:
   treeType *tree;
 };
-}
-#endif // CONTAINERS_S21_SET_H
+}  // namespace s21
+#endif  // CONTAINERS_S21_SET_H

@@ -1,11 +1,12 @@
-#ifndef CONTAINERS_S21_MULTISET_H
-#define CONTAINERS_S21_MULTISET_H
+#ifndef CONTAINERS_S21_multiset_H
+#define CONTAINERS_S21_multiset_H
 
 #include "s21_red_black_tree.h"
 
 namespace s21 {
-template <class Key> class Multiset {
-public:
+template <class Key>
+class multiset {
+ public:
   using key_type = Key;
   using value_type = key_type;
   using reference = value_type &;
@@ -14,34 +15,35 @@ public:
   using iterator = typename treeType::iterator;
   using const_iterator = typename treeType::constIterator;
   using size_type = std::size_t;
-private:
+
+ private:
   treeType *tree;
-public:
 
-  Multiset() : tree(new treeType{}) {}
+ public:
+  multiset() : tree(new treeType{}) {}
 
-  Multiset(std::initializer_list<value_type> const &items) : Multiset() {
+  multiset(std::initializer_list<value_type> const &items) : multiset() {
     for (auto item : items) {
       insert(item);
     }
   }
 
-  Multiset(const Multiset &other) : tree(new treeType(*other.tree)) {}
+  multiset(const multiset &other) : tree(new treeType(*other.tree)) {}
 
-  Multiset(Multiset &&other) noexcept
+  multiset(multiset &&other) noexcept
       : tree(new treeType(std::move(*other.tree))) {}
 
-  Multiset &operator=(const Multiset &other) {
+  multiset &operator=(const multiset &other) {
     *tree = *other.tree;
     return *this;
   }
 
-  Multiset &operator=(Multiset &&other) noexcept {
+  multiset &operator=(multiset &&other) noexcept {
     *tree = std::move(*other.tree);
     return *this;
   }
 
-  ~Multiset() {
+  ~multiset() {
     delete tree;
     tree = nullptr;
   }
@@ -54,12 +56,10 @@ public:
   [[nodiscard]] size_type size() const noexcept { return tree->Size(); }
   [[nodiscard]] size_type max_size() const noexcept { return tree->MaxSize(); }
   void clear() noexcept { tree->Clear(); }
-  iterator insert(const value_type &value) {
-    return tree->Insert(value);
-  }
+  iterator insert(const value_type &value) { return tree->Insert(value); }
   void erase(iterator pos) noexcept { tree->Erase(pos); }
-  void swap(Multiset &other) noexcept { tree->Swap(*other.tree); }
-  void merge(Multiset &other) noexcept { tree->Merge(*other.tree); }
+  void swap(multiset &other) noexcept { tree->Swap(*other.tree); }
+  void merge(multiset &other) noexcept { tree->Merge(*other.tree); }
   size_type count(const key_type &key) const {
     auto lowerIt = lower_bound(key);
 
@@ -94,7 +94,8 @@ public:
     return std::pair<iterator, iterator>{first, second};
   }
 
-  std::pair<const_iterator, const_iterator> equal_range(const key_type &key) const noexcept {
+  std::pair<const_iterator, const_iterator> equal_range(
+      const key_type &key) const noexcept {
     const_iterator first = lower_bound(key);
     const_iterator second = upper_bound(key);
 
@@ -118,11 +119,9 @@ public:
   }
 
   template <typename... Args>
-  std::vector<std::pair<iterator, bool>> emplace(Args &&...args) {
+  std::vector<std::pair<iterator, bool>> insert_many(Args &&...args) {
     return tree->Emplace(std::forward<Args>(args)...);
   }
-
-
 };
-}
-#endif // CONTAINERS_S21_MULTISET_H
+}  // namespace s21
+#endif  // CONTAINERS_S21_multiset_H

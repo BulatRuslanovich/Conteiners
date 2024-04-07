@@ -8,13 +8,14 @@
 namespace s21 {
 enum RBTreeColor { Black, Red };
 
-template <typename Key, typename Comparator = std::less<Key>> class RBTree {
-private:
+template <typename Key, typename Comparator = std::less<Key>>
+class RBTree {
+ private:
   struct RBTreeNode;
   struct RBTreeIterator;
   struct RBTreeConstIterator;
 
-public:
+ public:
   using keyType = Key;
   using reference = keyType &;
   using constReference = const keyType &;
@@ -26,12 +27,12 @@ public:
   using treeNode = RBTreeNode;
   using treeColor = RBTreeColor;
 
-private:
+ private:
   treeNode *root;
   sizeType size;
   Comparator cmp;
 
-public:
+ public:
   RBTree() : root(new treeNode), size(0U) {}
 
   RBTree(const treeType &other) : RBTree() {
@@ -266,7 +267,7 @@ public:
     return true;
   }
 
-private:
+ private:
   void CopyTreeFromOther(const treeType &other) {
     treeNode *otherCopyRoot = CopyTree(other.Root(), nullptr);
     Clear();
@@ -299,8 +300,7 @@ private:
   }
 
   void Destroy(treeNode *node) noexcept {
-    if (node == nullptr)
-      return;
+    if (node == nullptr) return;
 
     Destroy(node->left);
     Destroy(node->right);
@@ -330,8 +330,7 @@ private:
       if (cmp(newNode->key, node->key)) {
         node = node->left;
       } else {
-        if (!unique ||
-            cmp(node->key, newNode->key)) {
+        if (!unique || cmp(node->key, newNode->key)) {
           node = node->right;
         } else {
           return {iterator(node), false};
@@ -713,19 +712,32 @@ private:
     treeColor color;
 
     RBTreeNode()
-        : parent(nullptr), left(this), right(this), key(keyType{}),
+        : parent(nullptr),
+          left(this),
+          right(this),
+          key(keyType{}),
           color(Red){};
 
     explicit RBTreeNode(const keyType &key)
-        : parent(nullptr), left(nullptr), right(nullptr), key(key), color(Red) {
-    }
+        : parent(nullptr),
+          left(nullptr),
+          right(nullptr),
+          key(key),
+          color(Red) {}
 
     explicit RBTreeNode(keyType &&key)
-        : parent(nullptr), left(nullptr), right(nullptr), key(std::move(key)),
+        : parent(nullptr),
+          left(nullptr),
+          right(nullptr),
+          key(std::move(key)),
           color(Red) {}
 
     RBTreeNode(keyType key, treeColor color)
-        : parent(nullptr), left(nullptr), right(nullptr), key(key), color(color){};
+        : parent(nullptr),
+          left(nullptr),
+          right(nullptr),
+          key(key),
+          color(color){};
 
     void ToDefault() noexcept {
       left = nullptr;
@@ -768,7 +780,7 @@ private:
       if (node->color == Red &&
           (node->parent == nullptr || node->parent->parent == node)) {
         node = node->right;
-      } else if (node->right != nullptr) {
+      } else if (node->left != nullptr) {
         node = node->left;
 
         while (node->right != nullptr) {
@@ -778,12 +790,12 @@ private:
         treeNode *origin = node->parent;
 
         while (node == origin->left) {
-          node = parent;
-          origin = parent->parent;
+          node = origin;
+          origin = origin->parent;
         }
 
-        if (node->left != parent) {
-          node = parent;
+        if (node->left != origin) {
+          node = origin;
         }
       }
 
@@ -887,6 +899,6 @@ private:
     treeNode const *node;
   };
 };
-};
+};  // namespace s21
 
-#endif // CONTAINERS_S21_RED_BLACK_TREE_H
+#endif  // CONTAINERS_S21_RED_BLACK_TREE_H

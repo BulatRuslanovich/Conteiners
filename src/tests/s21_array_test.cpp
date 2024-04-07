@@ -1,9 +1,8 @@
 #include "gtest/gtest.h"
 #include "test.h"
 
-
 class ArrayTest : public ::testing::Test {
-protected:
+ protected:
   void SetUp() override {}
   s21::array<int, 0> my_queue_empty_;
   s21::array<int, 3> base_int{1, 2, 3};
@@ -84,9 +83,7 @@ TEST_F(ArrayTest, fill) {
   for (size_t i = 0; i < base_int_s21.size(); ++i) {
     ASSERT_EQ(base_int_s21[i], base_int_std[i]);
   }
-
 }
-
 
 TEST_F(ArrayTest, value) {
   s21::array<int, 5> base_int_s21{1, 2, 3, 4, 5};
@@ -112,4 +109,3 @@ TEST_F(ArrayTest, move_operator) {
   base_int_s21 = std::move(base_int_s21_1);
   for (int i = 0; i < 5; ++i) EXPECT_EQ(base_int_s21.at(i), base_int_s21_2[i]);
 }
-

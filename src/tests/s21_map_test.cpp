@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
-#include "test.h"
 #include <map>
 
+#include "gtest/gtest.h"
+#include "test.h"
 
 TEST(Map, Constructor1) {
   s21::map<int, double> my_map{
@@ -31,7 +31,8 @@ TEST(Map, Constructor1) {
   while (std_iter != std_map2.end()) {
     ASSERT_TRUE((*my_iter).first == (*std_iter).first);
     ASSERT_TRUE((*my_iter).second == (*std_iter).second);
-//    std::cout << (*my_iter).first << " " << (*my_iter).second << " orig: " << (*std_iter).first << " " <<  (*std_iter).second << std::endl;
+    //    std::cout << (*my_iter).first << " " << (*my_iter).second << " orig: "
+    //    << (*std_iter).first << " " <<  (*std_iter).second << std::endl;
     ++my_iter;
     ++std_iter;
   }
@@ -883,5 +884,3 @@ TEST(Map, Begin9000) {
   it++, it_std++;
   EXPECT_EQ((*it).first, (*it_std).first);
 }
-
-
