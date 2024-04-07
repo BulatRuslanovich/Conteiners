@@ -109,13 +109,12 @@ class queue {
     }
   }
 
-
   template <typename... Args>
-    void insert_many_back(Args&&... args) {
-        (push(std::forward<Args>(args)), ...);
-    }
+  void insert_many_back(Args&&... args) {
+    (push(std::forward<Args>(args)), ...);
+  }
 
-  private:
+ private:
   struct Node {
     value_type value_;
     Node* next_;

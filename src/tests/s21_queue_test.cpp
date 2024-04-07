@@ -154,8 +154,6 @@ TEST_F(QueueTest, insert_many_back) {
   my_queue_full_.pop();
 }
 
-
-
 TEST_F(QueueTest, insert_object) {
   struct Temp {
     Temp(int x) { x_tmp = x; }
