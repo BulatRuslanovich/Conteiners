@@ -132,3 +132,37 @@ TEST_F(QueueTest, front_and_back_functions) {
     ASSERT_THROW(my_queue_empty_.front(), std::out_of_range);
     ASSERT_THROW(my_queue_empty_.back(), std::out_of_range);
 }
+
+TEST_F(QueueTest, insert_many_back) {
+  my_queue_full_.insert_many_back(48);
+  my_queue_full_.insert_many_back(68);
+  my_queue_full_.insert_many_back(88);
+  my_queue_full_.insert_many_back(108);
+  
+  ASSERT_EQ(my_queue_full_.front(), 2);  
+  ASSERT_EQ(my_queue_full_.back(), 108);
+  my_queue_full_.pop();  
+
+  ASSERT_EQ(my_queue_full_.front(), 5); 
+  my_queue_full_.pop();  
+
+  ASSERT_EQ(my_queue_full_.front(), 7);  
+  my_queue_full_.pop();  
+
+  ASSERT_EQ(my_queue_full_.front(), 10);  
+  my_queue_full_.pop();  
+}
+
+
+
+TEST_F(QueueTest, insert_object) {
+  struct Temp {
+    Temp(int x) { x_tmp = x; }
+    Temp() {}
+    ~Temp() {}
+    int x_tmp = 0;
+  };
+  s21::queue<Temp> tmp;
+  tmp.insert_many_back(2);
+  ASSERT_EQ(tmp.back().x_tmp, 2);
+}
