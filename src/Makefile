@@ -1,7 +1,6 @@
 CC = g++
 CFLAGS = -Wall -Werror -Wextra -std=c++17 -lstdc++
 
-
 test: clean
 	g++ $(CFLAGS) tests/*.cpp containers/*.h -lgtest -o test
 	./test
@@ -19,3 +18,4 @@ cpplint:
 	clang-format -n --verbose tests/*.cpp containers/*.h
 valgrind:
 	valgrind  --tool=memcheck --track-fds=yes --trace-children=yes --track-origins=yes --leak-check=full --show-leak-kinds=all -s ./test
+
